@@ -1,12 +1,13 @@
 import discord
-from discord.ext import commands, bridge
+from discord.ext import commands
 from discord.commands import slash_command, Option
 
 import aiohttp
+import aiosqlite
 import logging
 import os
 
-"""   Logging   """
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("discord")
 handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
@@ -14,7 +15,7 @@ handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 
-class Xout(bridge.Bot):
+class Xout(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.session: aiohttp.ClientSession = None
@@ -35,11 +36,9 @@ class Xout(bridge.Bot):
         logging.info("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛")
 
 
-async def get_prefix(bot, message):
-    return commands.when_mentioned_or('!')
-
 client = Xout(
-    command_prefix="!"
+    command_prefix="x!",
+    intents=discord.Intents.all()
 )
 
 
