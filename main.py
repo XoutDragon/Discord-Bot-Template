@@ -41,14 +41,18 @@ async def get_prefix(client, message):
     async with db.execute("SELECT * FROM prefixes") as cursor:
         async for row in cursor:
             if row[0] == message.guild.id:
-                return commands.when_mentioned_or(row[1])
-        return commands.when_mentioned_or("x!")
+                return commands.when_mentioned_or(row[1])(client, message)
+        return commands.when_mentioned_or("x!")(client, message)
 
 client = Xout(
     command_prefix=get_prefix,
     intents=discord.Intents.all()
 )
 
+
+@client.command()
+async def echo(ctx, *, arg):
+    await ctx.send(f"{arg}")
 
 client.run(os.environ["DISCORD_TOKEN"])
 
