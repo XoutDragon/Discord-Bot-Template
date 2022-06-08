@@ -36,8 +36,16 @@ class Xout(commands.Bot):
         logging.info("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛")
 
 
+async def get_prefix(client, message):
+    db = await aiosqlite.connect('database/prefixes.db')
+    async with db.execute("SELECT * FROM prefixes") as cursor:
+        async for row in cursor:
+            if row[0] == message.guild.id:
+                return commands.when_mentioned_or(row[1])
+        return commands.when_mentioned_or("x!")
+
 client = Xout(
-    command_prefix="x!",
+    command_prefix=get_prefix,
     intents=discord.Intents.all()
 )
 
