@@ -57,7 +57,7 @@ async def get_extensions(ctx: discord.AutocompleteContext):
     for cog_directory in cog_directories:
         for filename in os.listdir(cog_directory):
             if filename.endswith(".py"):
-                extensions.append(filename[:-3])
+                extensions.append(f"{cog_directory[2:]}.{filename[:-3]}")
     if extensions:
         return [cog for cog in extensions if cog.startswith(ctx.value.lower())]
 
@@ -86,7 +86,7 @@ async def _unload(ctx: discord.ApplicationContext, cog: str):
                                               description="There were no cogs to unload."), ephemeral=True)
         return
 
-    client.load_extension(cog)
+    client.unload_extension(cog)
     await client.sync_commands(force=True)
     await ctx.respond(embed=discord.Embed(color=discord.Color.brand_green(),
                                           description=f"`{cog}` was successfully unloaded."), ephemeral=True)
@@ -100,10 +100,29 @@ async def _reload(ctx: discord.ApplicationContext, cog: str):
                                               description="There were no cogs to reload."), ephemeral=True)
         return
 
+    client.unload_extension(cog)
     client.load_extension(cog)
     await client.sync_commands(force=True)
     await ctx.respond(embed=discord.Embed(color=discord.Color.brand_green(),
                                           description=f"`{cog}` was successfully reloaded."), ephemeral=True)
+
+
+@client.bridge_command(name="revive", description="revive server!", guild_ids=[965061411430600824, 981880587994419250])
+async def _revive(ctx):
+    async with client.session.get("https://api.waifu.pics/sfw/smile") as resp:
+        data = await resp.json()
+        image = data["url"]
+    role = ctx.guild.get_role(984247539215765525)
+    embed = discord.Embed(
+        color=discord.Color.nitro_pink(),
+        description="[**Revived Server!**](https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley)"
+    )
+    embed.set_image(url=image)
+
+    await ctx.respond(
+        f"{role.mention} {ctx.author.mention} has revived the server!",
+        embed=embed
+    )
 
 client.run(os.environ["DISCORD_TOKEN"])
 
