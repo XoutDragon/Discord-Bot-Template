@@ -1,9 +1,9 @@
-2022-06-11 09:29:15,673:WARNING:discord.client: PyNaCl is not installed, voice will NOT be supported
-2022-06-11 09:29:15,674:INFO:discord.client: logging in using static token
-2022-06-11 09:29:16,159:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
-2022-06-11 09:29:16,349:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-vxl6",{"micros":134161,"calls":["discord-sessions-green-prd-2-24",{"micros":133046,"calls":["start_session",{"micros":104260,"calls":["discord-api-768499f95b-7cgnj",{"micros":91595,"calls":["get_user",{"micros":20096},"add_authorized_ip",{"micros":2443},"get_guilds",{"micros":9112},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":14339,"calls":[]}]}]}] (Session ID: 1cbf42913a93e81bd11bfb48c969b35c).
-2022-06-11 09:30:10,819:INFO:discord.client: Received signal to terminate bot and event loop.
-2022-06-11 09:30:10,819:INFO:discord.client: Cleaning up tasks.
-2022-06-11 09:30:10,819:INFO:discord.client: Cleaning up after 1 tasks.
-2022-06-11 09:30:10,885:INFO:discord.client: All tasks finished cancelling.
-2022-06-11 09:30:10,885:INFO:discord.client: Closing the event loop.
+2022-06-14 14:10:46,246:WARNING:discord.client: PyNaCl is not installed, voice will NOT be supported
+2022-06-14 14:10:46,282:INFO:discord.client: logging in using static token
+2022-06-14 14:10:46,773:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
+2022-06-14 14:10:46,922:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-pktf",{"micros":83801,"calls":["discord-sessions-green-prd-2-125",{"micros":82307,"calls":["start_session",{"micros":53584,"calls":["discord-api-868b4c797-6xd7m",{"micros":37474,"calls":["get_user",{"micros":7941},"add_authorized_ip",{"micros":1581},"get_guilds",{"micros":6628},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":26930,"calls":[]}]}]}] (Session ID: 823f0245198e504780a618a8e3de899d).
+2022-06-14 14:11:07,918:INFO:discord.client: Received signal to terminate bot and event loop.
+2022-06-14 14:11:07,919:INFO:discord.client: Cleaning up tasks.
+2022-06-14 14:11:07,919:INFO:discord.client: Cleaning up after 2 tasks.
+2022-06-14 14:11:07,984:INFO:discord.client: All tasks finished cancelling.
+2022-06-14 14:11:07,984:INFO:discord.client: Closing the event loop.

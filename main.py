@@ -44,15 +44,21 @@ class Xout(bridge.Bot):
         logging.info(f'Connected to bot: {self.user.name}'.center(55))
         logging.info(f'Bot ID: {self.user.id}'.center(55))
         logging.info("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛")
-
         await self.sync_commands()
 
 
 client = Xout(intents=discord.Intents.all())
 
 
+cog_directories = ['./commands', './events']
+
+for directory in [cog_directories[0][2:]]:
+    for file in os.listdir(directory):
+        if file.endswith(".py"):
+            client.load_extension(f"{directory}.{file[:-3]}")
+
+
 async def get_extensions(ctx: discord.AutocompleteContext):
-    cog_directories = ['./commands', './events']
     extensions = []
     for cog_directory in cog_directories:
         for filename in os.listdir(cog_directory):
@@ -65,64 +71,59 @@ async def get_extensions(ctx: discord.AutocompleteContext):
 
 
 @client.slash_command(name="load", description="loads a cog")
-@discord.option("cog", description="choose a cog to load", autocomplete=get_extensions)
-async def _load(ctx: discord.ApplicationContext, cog: str):
-    if cog == "None":
+@discord.option("extension", description="choose a cog to load", autocomplete=get_extensions)
+async def load(ctx: discord.ApplicationContext, extension: str):
+    await ctx.defer()
+    if extension == "None":
         await ctx.respond(embed=discord.Embed(color=discord.Color.brand_red(),
                                               description="There were no cogs to load in."), ephemeral=True)
         return
 
-    client.load_extension(cog)
-    await client.sync_commands(force=True)
+    client.load_extension(extension)
+    try:
+        await client.sync_commands()
+    except discord.HTTPException:
+        pass
     await ctx.respond(embed=discord.Embed(color=discord.Color.brand_green(),
-                                          description=f"`{cog}` was successfully loaded in."), ephemeral=True)
+                                          description=f"`{extension}` was successfully loaded in."), ephemeral=True)
 
 
 @client.slash_command(name="unload", description="unloads a cog")
-@discord.option("cog", description="choose a cog to unload", autocomplete=get_extensions)
-async def _unload(ctx: discord.ApplicationContext, cog: str):
-    if cog == "None":
+@discord.option("extension", description="choose a cog to unload", autocomplete=get_extensions)
+async def unload(ctx: discord.ApplicationContext, extension: str):
+    await ctx.defer()
+    if extension == "None":
         await ctx.respond(embed=discord.Embed(color=discord.Color.brand_red(),
                                               description="There were no cogs to unload."), ephemeral=True)
         return
 
-    client.unload_extension(cog)
-    await client.sync_commands(force=True)
+    client.unload_extension(extension)
+    try:
+        await client.sync_commands(force=True)
+    except discord.HTTPException:
+        pass
     await ctx.respond(embed=discord.Embed(color=discord.Color.brand_green(),
-                                          description=f"`{cog}` was successfully unloaded."), ephemeral=True)
+                                          description=f"`{extension}` was successfully unloaded."), ephemeral=True)
 
 
 @client.slash_command(name="reload", description="reloads a cog")
-@discord.option("cog", description="choose a cog to reload", autocomplete=get_extensions)
-async def _reload(ctx: discord.ApplicationContext, cog: str):
-    if cog == "None":
+@discord.option("extension", description="choose a cog to reload", autocomplete=get_extensions)
+async def reload(ctx: discord.ApplicationContext, extension: str):
+    await ctx.defer()
+    if extension == "None":
         await ctx.respond(embed=discord.Embed(color=discord.Color.brand_red(),
                                               description="There were no cogs to reload."), ephemeral=True)
         return
 
-    client.unload_extension(cog)
-    client.load_extension(cog)
-    await client.sync_commands(force=True)
+    client.unload_extension(extension)
+    client.load_extension(extension)
+    try:
+        await client.sync_commands(force=True)
+    except discord.HTTPException:
+        pass
     await ctx.respond(embed=discord.Embed(color=discord.Color.brand_green(),
-                                          description=f"`{cog}` was successfully reloaded."), ephemeral=True)
+                                          description=f"`{extension}` was successfully reloaded."), ephemeral=True)
 
-
-@client.bridge_command(name="revive", description="revive server!", guild_ids=[965061411430600824, 981880587994419250])
-async def _revive(ctx):
-    async with client.session.get("https://api.waifu.pics/sfw/smile") as resp:
-        data = await resp.json()
-        image = data["url"]
-    role = ctx.guild.get_role(984247539215765525)
-    embed = discord.Embed(
-        color=discord.Color.nitro_pink(),
-        description="[**Revived Server!**](https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley)"
-    )
-    embed.set_image(url=image)
-
-    await ctx.respond(
-        f"{role.mention} {ctx.author.mention} has revived the server!",
-        embed=embed
-    )
 
 client.run(os.environ["DISCORD_TOKEN"])
 
