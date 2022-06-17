@@ -1,9 +1,4 @@
-2022-06-14 14:10:46,246:WARNING:discord.client: PyNaCl is not installed, voice will NOT be supported
-2022-06-14 14:10:46,282:INFO:discord.client: logging in using static token
-2022-06-14 14:10:46,773:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
-2022-06-14 14:10:46,922:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-pktf",{"micros":83801,"calls":["discord-sessions-green-prd-2-125",{"micros":82307,"calls":["start_session",{"micros":53584,"calls":["discord-api-868b4c797-6xd7m",{"micros":37474,"calls":["get_user",{"micros":7941},"add_authorized_ip",{"micros":1581},"get_guilds",{"micros":6628},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":26930,"calls":[]}]}]}] (Session ID: 823f0245198e504780a618a8e3de899d).
-2022-06-14 14:11:07,918:INFO:discord.client: Received signal to terminate bot and event loop.
-2022-06-14 14:11:07,919:INFO:discord.client: Cleaning up tasks.
-2022-06-14 14:11:07,919:INFO:discord.client: Cleaning up after 2 tasks.
-2022-06-14 14:11:07,984:INFO:discord.client: All tasks finished cancelling.
-2022-06-14 14:11:07,984:INFO:discord.client: Closing the event loop.
+2022-06-17 15:26:26,139:WARNING:discord.client: PyNaCl is not installed, voice will NOT be supported
+2022-06-17 15:26:26,154:INFO:discord.client: logging in using static token
+2022-06-17 15:26:26,800:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
+2022-06-17 15:26:26,951:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-284s",{"micros":90207,"calls":["discord-sessions-green-prd-2-54",{"micros":88424,"calls":["start_session",{"micros":60288,"calls":["discord-api-d4dd76665-z8rtz",{"micros":40156,"calls":["get_user",{"micros":11081},"add_authorized_ip",{"micros":1770},"get_guilds",{"micros":5871},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":14078,"calls":[]}]}]}] (Session ID: 2c929a940c9579540313ef711f3c086f).

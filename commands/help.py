@@ -1,13 +1,28 @@
 import discord
 from discord.ext import commands, bridge
 from discord.ext.pages import PaginatorButton, Paginator
+from discord.ui import Select, View
 
 import aiosqlite
+
+from utils.views import HelpSelectMenu
+from utils.bot import get_config
 
 
 class HelpCommand(commands.Cog):
     def __init__(self, client):
         self.client = client
+
+    async def get_status(self):
+        match self.client.status:
+            case discord.Status.online:
+                return "🟩"
+            case discord.Status.idle:
+                return "🟨"
+            case discord.Status.dnd:
+                return "🟥"
+            case _:
+                return "Unable to retrieve status."
 
     @staticmethod
     async def get_prefix(ctx):
@@ -16,75 +31,26 @@ class HelpCommand(commands.Cog):
             async for row in cursor:
                 if row[0] == ctx.guild.id:
                     return row[1]
-            return "x!"
+            return "!"
 
     @bridge.bridge_command(name="help", description="shows explanations of commands")
     async def _help(self, ctx):
+        config = await get_config()
         prefix = await self.get_prefix(ctx)
-        cogs = [cog for cog in self.client.cogs if self.client.get_cog(cog).walk_commands() is not None]
-
-        modules = ""
-
-        for cog in cogs:
-            modules += f"{cog}\n"
+        status = await self.get_status()
 
         embed = discord.Embed(
-            color=discord.Color.blurple(),
-            title="List of Modules: ",
-            description=f"{modules}"
+            title=self.client.user.name,
+            description=f"A help menu for {self.client.user.name}. Use the select menu to navigate to a category",
+            color=discord.Color.blurple()
         )
+        embed.set_thumbnail(url=self.client.user.display_avatar.url)
+        embed.add_field(name="Prefix", value=prefix, inline=True)
+        embed.add_field(name="Latency", value=f"{self.client.latency * 1000:.0f}ms", inline=True)
+        embed.add_field(name="Status", value=status, inline=True)
+        embed.set_footer(text=f"Created by: {config['BotInformation']['Developer']}")
 
-        pages = [embed]
-
-        commands_list = []
-
-        for cog in cogs:
-            cog_embed = discord.Embed(color=discord.Color.blurple(), description=f"**{cog}'s commands:**")
-            cog_embed.set_author(name=self.client.user.name, icon_url=self.client.user.display_avatar.url)
-
-            for command in self.client.get_cog(cog).walk_commands():
-                if isinstance(command, discord.SlashCommandGroup):
-                    continue
-                if command.full_parent_name:
-                    command_name = command.full_parent_name + " " + command.name
-                else:
-                    command_name = command.name
-
-                if command_name in commands_list:
-                    continue
-
-                commands_list.append(command_name)
-
-                cog_embed.add_field(
-                    name=f"{prefix}{command_name}",
-                    value=f"""```{command.description}```"""
-                )
-
-            pages.append(cog_embed)
-
-        buttons = [
-            PaginatorButton("first", label="<<", style=discord.ButtonStyle.blurple),
-            PaginatorButton("prev", label="<-", style=discord.ButtonStyle.blurple),
-            PaginatorButton("page_indicator", style=discord.ButtonStyle.blurple, disabled=True),
-            PaginatorButton("next", label="->", style=discord.ButtonStyle.blurple),
-            PaginatorButton("last", label=">>", style=discord.ButtonStyle.blurple)
-        ]
-
-        paginator = Paginator(
-            pages=pages,
-            show_disabled=True,
-            show_indicator=True,
-            use_default_buttons=False,
-            custom_buttons=buttons,
-            loop_pages=False,
-            disable_on_timeout=True,
-            timeout=30
-        )
-
-        if isinstance(ctx, commands.Context):
-            await paginator.respond(ctx, ephemeral=True)
-        else:
-            await paginator.respond(ctx.interaction, ephemeral=True)
+        await ctx.respond(embed=embed, view=HelpSelectMenu(self.client, prefix))
 
 
 def setup(client):

@@ -1,11 +1,9 @@
 import discord
-from discord.ext import commands, bridge
-from discord.commands import slash_command, Option
 
-import aiohttp
-import aiosqlite
 import logging
 import os
+
+from utils.bot import MyClient
 
 
 logging.basicConfig(level=logging.INFO)
@@ -15,39 +13,7 @@ handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 
-async def get_prefix(client, message):
-    db = await aiosqlite.connect('database/prefixes.db')
-    async with db.execute("SELECT * FROM prefixes") as cursor:
-        async for row in cursor:
-            if row[0] == message.guild.id:
-                return commands.when_mentioned_or(row[1])(client, message)
-        return commands.when_mentioned_or("x!")(client, message)
-
-
-class Xout(bridge.Bot):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.session: aiohttp.ClientSession = None
-        self.help_command = None
-        self.case_insensitive = True
-        self.command_prefix = get_prefix
-
-    async def close(self):
-        await super().close()
-        await self.session.close()
-
-    async def on_connect(self):
-        self.session: aiohttp.ClientSession = aiohttp.ClientSession()
-
-    async def on_ready(self):
-        logging.info("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓")
-        logging.info(f'Connected to bot: {self.user.name}'.center(55))
-        logging.info(f'Bot ID: {self.user.id}'.center(55))
-        logging.info("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛")
-        await self.sync_commands()
-
-
-client = Xout(intents=discord.Intents.all())
+client = MyClient()
 
 
 cog_directories = ['./commands', './events']
@@ -125,5 +91,6 @@ async def reload(ctx: discord.ApplicationContext, extension: str):
                                           description=f"`{extension}` was successfully reloaded."), ephemeral=True)
 
 
-client.run(os.environ["DISCORD_TOKEN"])
+if __name__ == "__main__":
+    client.run(os.environ["DISCORD_TOKEN"])
 

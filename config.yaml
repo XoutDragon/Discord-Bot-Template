@@ -1,0 +1,5 @@
+BotInformation:
+  Version: "1.0"
+  Developer: "Enter Name Here"
+BotConfiguration:
+    Default_Prefix: "!"
