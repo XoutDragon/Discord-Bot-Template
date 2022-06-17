@@ -24,14 +24,14 @@ class HelpCommand(commands.Cog):
             case _:
                 return "Unable to retrieve status."
 
-    @staticmethod
-    async def get_prefix(ctx):
+    async def get_prefix(self, ctx):
         db = await aiosqlite.connect('database/prefixes.db')
         async with db.execute("SELECT * FROM prefixes") as cursor:
             async for row in cursor:
                 if row[0] == ctx.guild.id:
                     return row[1]
-            return "!"
+            config = await get_config()
+            return config["BotConfiguration"]["Default_Prefix"]
 
     @bridge.bridge_command(name="help", description="shows explanations of commands")
     async def _help(self, ctx):
